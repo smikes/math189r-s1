@@ -3,6 +3,7 @@
 Examine election/polling result data from Calgary.  
 
 Data sources:
+2013 Municipal Election
 2015 Provincial election
 2015 Federal Election
 2017 Municipal Election
