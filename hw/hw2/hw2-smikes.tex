@@ -1,0 +1,201 @@
+\documentclass[12pt,letterpaper]{hmcpset}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{parskip}
+
+\input{macros.tex}
+% info for header block in upper right hand corner
+\name{Sam Mikes}
+\class{Math189R SU20.1}
+\assignment{Homework 2}
+\duedate{Tuesday June 16, 2020}
+
+\begin{document}
+
+\begin{problem}[1]
+	(\textbf{Murphy 8.3}) Gradient and Hessian of the log-likelihood for
+	logistic regression.
+	\begin{enumerate}[(a)]
+		\item Let $\sigma(x) = \frac{1}{1 + e^{-x}}$ be the sigmoid function. Show that
+		\[
+		\sigma'(x) = \sigma(x)\left[1 - \sigma(x)\right].
+		\]
+		\item Using the previous result and the chain rule of calculus, derive an
+		expression for the gradient of the log likelihood for logistic regression.
+		\item The Hessian can be written as $\Hb=\Xb^\T\Sb\Xb$ where $\Sb =
+		\diag(\mu_1(1-\mu_1), \dots, \mu_n(1-\mu_n))$. Derive this and show that
+		$\Hb \succeq 0$ ($A \succeq 0$ means that $A$ is positive semidefinite).\\
+	\end{enumerate} 
+
+\textit{Hint:} Use the \textbf{negative} log-likelihood of logistic regression for this problem.
+\end{problem}
+\begin{solution}
+
+\begin{enumerate}		
+\item Show that $\sigma'(x) = \sigma(x)\left[1 - \sigma(x)\right].$
+
+\begin{equation}\begin{aligned}
+\frac{\partial \sigma}{\partial x} \label{eq:main} & = \frac{\partial }{\partial x} \frac{1}{1 + e^{-x}} = -( \frac{1}{1 + e^{-x}} )^2 \cdot \frac{\partial }{\partial x} ( 1 + e^{-x} ) \\
+& = ( \frac{1}{1 + e^{-x}} ) \cdot ( \frac{1}{1 + e^{-x}} ) \cdot e^{-x} \\
+& = \sigma \cdot ( \frac{ e^{-x} }{1 + e^{-x}} )
+\end{aligned}\end{equation}
+
+Since
+\begin{equation}\begin{aligned}
+  1 - \sigma \label{eq:inset} & = 1 - ( \frac{1}{1 + e^{-x}} ) = \frac{1 + e^{-x}}{1 + e^{-x}} - \frac{1}{1 + e^{-x}} \\
+  & = \frac{1 + e^{-x} - 1}{1 + e^{-x}} \\
+  & = \frac{e^{-x}}{1 + e^{-x}}
+\end{aligned}\end{equation}
+
+Substitute \eqref{eq:inset} into \eqref{eq:main} to obtain
+
+\begin{equation}\begin{aligned}
+  \frac{\partial \sigma}{\partial x} = \sigma(1 - \sigma)
+\end{aligned}\end{equation}
+
+\item Derive an expression for the gradient of the log likelihood.
+
+  Recall NLL is defined (\textbf{Murphy Equation 8.3})
+\begin{equation}\begin{aligned}
+NLL(\ww) = \sum_{i=1}^N [ y_i \log \mu_i + (1 - y_i)log(1 - \mu_i) ]
+\end{aligned}\end{equation}
+
+Then 
+\begin{equation}\begin{aligned}
+\delta NLL (\ww) = \frac{\partial}{\partial \ww} \sum_{i=1}^N [ y_i \log \mu_i + (1 - y_i)log(1 - \mu_i) ]
+\end{aligned}\end{equation}
+
+Each term in the sum
+\begin{equation}\begin{aligned}
+    \frac{\partial}{\partial \ww} [ y_i \log \mu_i + (1 - y_i)log(1 - \mu_i) ]
+    & = y_i (\frac{1}{\mu_i}{\partial \mu_i}{\partial \ww} + (1 - y_i)\frac{1}{1 - \mu_i}{\partial }{\partial \ww}(1-\mu_i) \\
+    & = \frac{ y_i \mu_i (1 - \mu_i) }{\mu_i} + \frac{ (1 - y_i)(1 - \mu_i)(-1)(1 - (1 - \mu_i)) }{ 1 - \mu_i } \\
+    & = y_i (1 - \mu_i) - (1 - y_i)(\mu_i) \\
+    & = y_i - y_i \mu_i - \mu_i + y_i \mu_i \\
+    & = y_i - \mu_i
+\end{aligned}\end{equation}
+
+As expected.
+
+\item 3. Not completed.
+  
+\end{enumerate}
+
+	\vfill
+\end{solution}
+\newpage
+
+\begin{problem}[2]
+	(\textbf{Murphy 2.11})
+	Derive the normalization constant ($Z$) for a one dimensional
+	zero-mean Gaussian
+	\[
+	\PP(x; \sigma^2) = \frac{1}{Z}\exp\left(-\frac{x^2}{2\sigma^2}\right)
+	\]
+	such that $\PP(x; \sigma^2)$ becomes a valid density.
+\end{problem}
+\begin{solution}
+
+        Not completed.
+
+        Would reference well-known proof where change of variable from $x -> y$, multiply two functions together,
+        change variables to $r, \theta $, integral is now in $r dr d\theta$ instead of $ dx dy $, and
+        thus the integral yields $Z^2 = 2\pi / \sigma^2$
+	\vfill
+
+
+\end{solution}
+\newpage
+
+\begin{problem}[3]
+(\textbf{regression}). In this problem, we will use the online news popularity dataset to set up a model for linear regression. In the starter code, we have already parsed the data for you. However, you might need internet connection to access the data and therefore successfully run the starter code.
+\newline \newline
+We split the csv file into a training and test set with
+the first two thirds of the data in the training set and the rest for testing.
+Of the testing data, we split the first half into a `validation set' (used
+to optimize hyperparameters while leaving your testing data pristine) and
+the remaining half as your test set.
+We will use this data for the remainder of the problem. The goal of this data
+is to predict the \textbf{log} number of shares a news article will have given the other
+features.
+\newline \newline
+\begin{enumerate}[(a)]
+	\item (\textbf{math}) Show that the maximum a posteriori problem for
+	linear regression with a zero-mean Gaussian prior $\PP(\ww) = \prod_j
+	\Nc(w_j | 0, \tau^2)$ on the weights,
+	\[
+	\argmax_\ww \sum_{i=1}^N \log\Nc(y_i | w_0 + \ww^\T\xx_i, \sigma^2) + \sum_{j=1}^D \log\Nc(w_j | 0, \tau^2)
+	\]
+	is equivalent to the ridge regression problem
+	\[
+	\argmin \frac{1}{N}\sum_{i=1}^N (y_i - (w_0 + \ww^\T\xx_i))^2 + \lambda ||\ww||_2^2
+	\]
+	with $\lambda = \sigma^2 / \tau^2$.
+	\newline
+	\item (\textbf{math}) Find a closed form solution $\xx^\star$ to the ridge regression
+	problem:
+	\[
+	\text{minimize: } ||A\xx - \bb||_2^2 + ||\Gamma\xx||_2^2.
+	\]
+	
+	\item
+	(\textbf{implementation}) Attempt to predict the $\log\text{shares}$ using ridge
+regression from the previous problem solution. Make sure you include a bias
+term and \textit{don't regularize the bias term}.
+Find the optimal regularization parameter $\lambda$
+from the validation set. Plot both $\lambda$ versus the validation RMSE (you should have
+tried at least 150 parameter settings randomly chosen between 0.0 and 150.0 because
+the dataset is small)
+and $\lambda$ versus $||\thetab^\star||_2$ where $\thetab$ is your weight vector.
+What is the final RMSE on the test set with the optimal $\lambda^\star$?\\
+\newline
+(continued on the following pages)
+\end{enumerate}
+\end{problem}
+\begin{solution}
+	\vfill
+\end{solution}
+\newpage
+
+\begin{problem}[3 (continued)]
+\begin{enumerate}[(a)]
+	\setcounter{enumi}{3}
+\item (\textbf{math}) Consider regularized linear regression where we pull the
+basis term out of the feature vectors. That is, instead of computing $\hat\yy
+= \thetab^\T\xx$ with $\xx_0 = 1$, we compute $\hat\yy = \thetab^\T\xx + b$.
+This corresponds to solving the optimization problem
+\[
+\text{minimize: } ||A\xx + b\1 - \yy||_2^2 + ||\Gamma\xx||_2^2.
+\]
+Solve for the optimal $\xx^\star$ explicitly. Use this close form to compute the
+bias term for the previous problem (with the same regularization strategy). Make
+sure it is the same.
+\newline
+\item (\textbf{implementation}) We can also compute the solution to the least squares
+problem using gradient descent. Consider the same bias-relocated objective
+\[
+\text{minimize: } f = ||A\xx + b\1 - \yy||_2^2 + ||\Gamma\xx||_2^2.
+\]
+Compute the gradients and run gradient descent. Plot the $\ell_2$ norm
+between the optimal $(\xx^\star, b^\star)$ vector you computed in closed form
+and the iterates generated by gradient descent. Hint: your plot should move
+down and to the left and approach zero as the number of iterations increases. If
+it doesn't, try decreasing the learning rate.
+\end{enumerate}
+\end{problem}
+\begin{solution}
+
+  Partially completed.  See attached python code hw2pr3.py.
+  In order to learn the techniques and get un-stuck, I referred to the published
+  solution of a previous class homework:
+
+  \url{https://github.com/math189bigdata/math189bigdata.github.io/homework/hw2/hw2_sol/hw2pr3_sol.py}
+
+	\vfill
+\end{solution}
+\newpage
+
+\end{document}
