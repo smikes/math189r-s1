@@ -98,13 +98,18 @@ def find_RMSE(W, X, y):
                 This function calculates and returns the root mean-squared error, RMSE
         """
         # TODO: Solve for the root mean-squared error, RMSE
-        "*** YOUR CODE HERE ***"
+        # "*** YOUR CODE HERE ***"
+        # m = X.shape[0]
+        # y_pred = X @ W
+        # y_err = y - y_pred
+        # sqr_error = (y_err.T @ y_err)
+        # mean_sqr_error = sqr_error / m
+        # RMSE = math.sqrt(mean_sqr_error)
+        y_pred = predict(W, X)
+        diff = y - y_pred
         m = X.shape[0]
-        y_pred = X @ W
-        y_err = y - y_pred
-        sqr_error = (y_err.T @ y_err)
-        mean_sqr_error = sqr_error / m
-        RMSE = math.sqrt(mean_sqr_error)
+        MSE = np.linalg.norm(diff, 2) ** 2 / m
+        RMSE = np.sqrt(MSE)
 
         # smikes note: I actually wrote this myself, and then checked against the solution (which uses np.norm)
         "*** END YOUR CODE HERE ***"

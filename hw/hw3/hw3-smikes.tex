@@ -1,0 +1,60 @@
+\documentclass[12pt,letterpaper,fleqn]{hmcpset}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{parskip}
+
+\input{macros.tex}
+
+% info for header block in upper right hand corner
+\name{Sam Mikes}
+\class{Math189R SU20.1}
+\assignment{Homework 3}
+\duedate{Thursday, June 18, 2019}
+
+\begin{document}
+
+\begin{problem}[1]
+(\textbf{Murphy 2.16}) Suppose $\theta \sim \text{Beta}(a,b)$ such
+        that
+        \[
+            \PP(\theta; a,b) = \frac{1}{B(a,b)} \theta^{a-1}(1-\theta)^{b-1} = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)} \theta^{a-1}(1-\theta)^{b-1}
+        \]
+        where $B(a,b) = \Gamma(a)\Gamma(b)/\Gamma(a+b)$ is the Beta function
+        and $\Gamma(x)$ is the Gamma function.
+        Derive the mean, mode, and variance of $\theta$.
+\end{problem}
+\begin{solution}
+
+\item Mean
+\begin{equation}\begin{aligned}
+E(x) & = \int \theta \PP(\theta; a,b) d\theta \\
+& = \frac{1}{B(a,b)} \int \theta \theta^{a-1}(1-\theta)^{b-1} d\theta \\
+& = \frac{1}{B(a,b)} \int \theta^a(1-\theta)^{b-1} d\theta \\
+& = \frac{1}{B(a,b)} \int (1-\theta)^{b-1} \theta^a d\theta \\
+\text{(by parts)} & = \frac{1}{B(a,b)} [ (1-\theta)^{b-1} \frac{\theta^{a+1}}{a + 1} ) + \frac{b-1}{a+1} \int \theta^{a+1} (1-\theta)^{b-2} d\theta ] \\
+\end{aligned}\end{equation}    
+
+
+
+\vfill
+\end{solution}
+\newpage
+
+\begin{problem}[2]
+(\textbf{Murphy 9}) Show that the multinoulli distribution
+\[
+    \text{Cat}(\xx|\mub) = \prod_{i=1}^K \mu_i^{x_i}
+\]
+is in the exponential family and show that the generalized linear model
+corresponding to this distribution is the same as multinoulli logistic
+regression (softmax regression).
+\end{problem}
+\begin{solution}
+\vfill
+\end{solution}
+\newpage
+
+\end{document}
