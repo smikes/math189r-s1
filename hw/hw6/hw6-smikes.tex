@@ -26,16 +26,26 @@ estimation of a mixture of Gaussians is given by
 \end{problem}
 \begin{solution}
 
+  First expand
 \begin{align*}
-  \Sigmab_k &= \frac{1}{r_k}\sum_i r_{ik}(\xx_i - \frac{\sum_j r_{jk}\xx_j}{r_k}) (\xx_i - \frac{\sum_j r_{jk}\xx_j}{r_k})^\T \\
-  &= \frac{1}{r_k}\sum_{ij} r_{ik}(\xx_i - \frac{r_{jk}\xx_j}{r_k}) (\xx_i - \frac{r_{jk}\xx_j}{r_k})^\T \\
-  &= \frac{1}{r_k}\sum_{ij} r_{ik} ( \xx_i\xx_i^\T - (\xx_i\xx_j^\T + \xx_j\xx_i^\T) \frac{r_{jk}}{r_k} + \frac{r_{jk}^2\xx_j\xx_j^\T}{r_k^2} ) \\
-  &= \frac{1}{r_k}\sum_{i} r_{ik} \xx_i\xx_i^\T - \sum_{ij} \frac {r_{jk}}{r_k^2} (\xx_i\xx_j^\T + \xx_j\xx_i^\T) + r_k \sum_j \frac{r_{jk}^2\xx_j\xx_j^\T}{r_k^2} \\
-  &= \frac{1}{r_k}\sum_{i} r_{ik} \xx_i\xx_i^\T + r_k \sum_j \frac{r_{jk}\xx_j}{r_k} \frac{r_{jk} \xx_j^\T}{r_k}  - \sum_{ij} \frac {r_{jk}^2}{r_k^2} (\xx_i\xx_j^\T + \xx_j\xx_i^\T) \\
-  &= \frac{1}{r_k}\sum_{i} r_{ik} \xx_i\xx_i^\T + r_k \mub_k \mub_k^\T
-\end{align*}  
+    \mub_k\mub_k^\T &= \frac{\sum_i r_{ik}\xx_i}{r_k} \frac{\sum_j r_{jk}\xx_j^\T}{r_k} \\
+    &= \frac{1}{r_k^2} ( \sum_i r_{ik} \xx_i ) ( \sum_j r_{jk} \xx_j^\T ) \\
+    &= 
+\end{align*}
 
-Where the term in $\xx_i\xx_j^\T$ vanishes because at a maximum, the $\xx_i$ are mutually orthogonal.
+\begin{align*}
+  \Sigmab_k &= \frac{1}{r_k}\sum_i r_{ik}(\xx_i - \frac{\sum_j r_{jk}\xx_j}{r_k}) (\xx_i - \frac{\sum_j r_{lk}\xx_l}{r_k})^\T \\
+  &= \frac{1}{r_k}\sum_{ijl} r_{ik}(\xx_i - \frac{r_{jk}\xx_j}{r_k}) (\xx_i - \frac{r_{lk}\xx_l}{r_k})^\T \\
+  &= \frac{1}{r_k}\sum_{ijl} r_{ik} ( \xx_i\xx_i^\T - (r_{lk} \xx_i\xx_l^\T + r_{jk} \xx_j\xx_i^\T) \frac{1}{r_k} + \frac{r_{jk}r_{lk} \xx_j \xx_l^\T}{r_k^2} ) \\
+  &= \frac{1}{r_k}\sum_{i} r_{ik} \xx_i\xx_i^\T - \sum_{ijl} \frac {r_{ik}}{r_k^2} (r_{lk} \xx_i\xx_l^\T + r_{jk} \xx_j\xx_i^\T) - \frac{r_{ik}r_{jk}r_{lk} \xx_j \xx_l^\T}{r_k^3}  \\
+  &= \frac{1}{r_k}\sum_{i} r_{ik} \xx_i\xx_i^\T ... \\
+  &= \frac{1}{r_k}\sum_{i} r_{ik} \xx_i\xx_i^\T - r_k \mub_k \mub_k^\T
+\end{align*}
+
+Checked solution; this was not the correct approach.
+
+
+
 \end{solution}
 
 \vfill
