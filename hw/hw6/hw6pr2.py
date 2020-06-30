@@ -24,6 +24,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy import ndimage
+import imageio
 import urllib
 
 if __name__ == '__main__':
@@ -41,8 +42,12 @@ if __name__ == '__main__':
                 #       Be sure to flatten the image with img.flatten() before doing the shuffling
 
         "*** YOUR CODE HERE ***"
+        shuffle_img = img.copy().flatten()
+        np.random.shuffle(shuffle_img)
 
-
+        # used hw6_sol/hw6pr2_sol.py as reference to understand what was desired for shuffle
+        # initially I thought we *wanted* the columnwise shuffle
+        
         "*** END YOUR CODE HERE ***"
         # reshape the shuffled image
         shuffle_img = shuffle_img.reshape(img.shape)
@@ -58,7 +63,9 @@ if __name__ == '__main__':
         #               3) Decompose shuffle_img into U_s, S_s, V_s
 
         "*** YOUR CODE HERE ***"
+        U, S, V = np.linalg.svd(img)
 
+        U_s, S_s, V_s = np.linalg.svd(shuffle_img)
 
         "*** END YOUR CODE HERE ***"
 
@@ -72,12 +79,15 @@ if __name__ == '__main__':
         #               1) Make sure to generate lines with different colors or markers
 
         "*** YOUR CODE HERE ***"
-
+        plt.plot(np.log(S[:100]),markevery=3)
+        plt.plot(np.log(S_s[:100]),color='green',markevery=4)
 
         "*** END YOUR CODE HERE ***"
 
-        plt.legend((orig_S_plot, shuf_S_plot), \
-                ('original', 'shuffled'), loc = 'best')
+        plt.legend(['Original', 'Shuffled'])
+        # plot/legend syntax has changed
+#        plt.legend((orig_S_plot, shuf_S_plot), \
+#                ('original', 'shuffled'), loc = 'best')
         plt.title('Singular Value Dropoff for Clown Image')
         plt.ylabel('singular values')
         plt.savefig('dropoff.png', format='png')
@@ -85,7 +95,7 @@ if __name__ == '__main__':
 
         # =============STEP 3: RECONSTRUCTION=================
         print('==> Reconstruction with different ranks...')
-        rank_list = [2, 10, 20]
+        rank_list = [2, 10, 25]
         plt.subplot(2, 2, 1)
         plt.imshow(img, cmap='Greys_r')
         plt.axis('off')
@@ -99,11 +109,12 @@ if __name__ == '__main__':
 
         for index in range(len(rank_list)):
                 k = rank_list[index]
+                r = range(k)
                 plt.subplot(2, 2, 2 + index)
 
                 "*** YOUR CODE HERE ***"
-
-
+                q = U.take(r,axis=1) @ (np.eye(k)*S.take([r]))@ V.take(r,axis=0)
+                plt.imshow(q, cmap='Greys_r')
                 "*** END YOUR CODE HERE ***"
 
                 plt.title('Rank {} Approximation'.format(k))
