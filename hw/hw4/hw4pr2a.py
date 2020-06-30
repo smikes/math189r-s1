@@ -75,9 +75,8 @@ def grad_logreg(X, y, W, reg=0.0):
         """
         # TODO: Find the gradient of logistic regression with respect to W
         "*** YOUR CODE HERE ***"
-        return X.T @ (sigmoid(X @ W) - y) + reg * W
 
-#        grad = X.T @ ( sigmoid(X@W) - y ) + reg * W
+        grad = X.T @ ( sigmoid(X@W) - y ) + reg * W
 
         "*** END YOUR CODE HERE ***"
         return grad
@@ -109,13 +108,14 @@ def NLL(X, y, W, reg=0.0):
         ### SMIKES: for my learning, referenced hw4_sol instead of attempting
         # to derive algorithm myself
         # also referenced: https://beckernick.github.io/logistic-regression-from-scratch/
-        mu = sigmoid(X @ W)
+        score = np.dot(X,W)
+        mu = sigmoid(score)
+
+#        mu = sigmoid(X @ W)
         temp = np.multiply(y, np.log(mu)) + np.multiply((1. - y), np.log(1. - mu))
         nll = -sum(temp) + reg / 2 * np.linalg.norm(W) ** 2
         return nll.item(0)
 
-#        score = np.dot(X,W)
-#        mu = sigmoid(score)
 #        temp = np.multiply(y, np.log(mu)) + np.multiply((1. - y), np.log(1. - mu))
 #        nll = -sum(temp) + reg / 2 * np.linalg.norm(W) ** 2
 #        return nll.item(0)
@@ -201,7 +201,7 @@ def grad_descent(X, y, reg=0.0, lr=1e-4, eps=1e-6, max_iter=500, print_freq=50):
 
 
 #########################
-#           Step 1a`            #
+#           Step 1a     #
 #########################
 
 def newton_step(X, y, W, reg=0.0):
@@ -228,8 +228,7 @@ def newton_step(X, y, W, reg=0.0):
         "*** YOUR CODE HERE ***"
         grad = grad_logreg(X, y, W, reg = reg)
         mu = sigmoid(X @ W)
-#        diag = np.eye(mu.shape[0]) @ (mu*(1-mu))
-        diag = np.diag(np.squeeze(np.asarray(np.multiply(mu, 1. - mu))))
+        diag = np.eye(mu.shape[0]) * (mu*(1-mu))
         H = X.T @ diag @ X + reg * np.eye(X.shape[1])
         d = np.linalg.solve(H, grad)
 
@@ -309,7 +308,7 @@ def newton_method(X, y, reg=0.0, eps=1e-6, max_iter=20, print_freq=1):
 
 
 #########################
-#                Step 3                 #
+#                Step 3 #
 #########################
 
 def predict(X, W):
@@ -529,7 +528,7 @@ if __name__ == '__main__':
 
         print('Step 1 elapsed: ',time.time() - start)
 
-        if False:
+        if True:
                 # ========STEP 1a: Gradient descent=========
                 # NOTE: Fill in the code in grad_logreg, NLL and grad_descent for this step
 

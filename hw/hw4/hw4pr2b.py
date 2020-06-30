@@ -62,7 +62,13 @@ def NLL(X, y, W, reg=0.0):
         """
         # TODO: Find the negative log likelihood for softmax regression
         "*** YOUR CODE HERE ***"
+        mu = X @ W
+        exp = np.exp(mu)
+        prob = exp / exp.sum(axis=1).reshape(-1,1)
+#        prob = exp / (exp.sum(axis=1))
 
+        groundTruth = y * np.log(prob)
+        NLL = -groundTruth.sum(axis=1).sum() + reg * np.diag(W.T @ W).sum()
 
         "*** END YOUR CODE HERE ***"
         return NLL
@@ -88,8 +94,10 @@ def grad_softmax(X, y, W, reg=0.0):
         """
         # TODO: Find the gradient of softmax regression with respect to W
         "*** YOUR CODE HERE ***"
-
-
+        mu = X @ W
+        exp_mu = np.exp(mu)
+        prob = exp_mu / exp_mu.sum(axis=1).reshape(-1, 1)
+        grad = X.T @ (prob - y) + reg * W
         "*** END YOUR CODE HERE ***"
         return grad
 
@@ -113,7 +121,11 @@ def predict(X, W):
         # TODO: Obtain the array of predicted label y_pred using X, and
         # Weight given
         "*** YOUR CODE HERE ***"
-
+        mu = X @ W
+        exp = np.exp(mu)
+        prob = exp / (exp.sum(axis=1).reshape(-1,1))
+        y_pred = np.argmax(prob, axis=1).reshape(-1,1)
+                      
 
         "*** END YOUR CODE HERE ***"
         return y_pred
@@ -136,7 +148,7 @@ def get_accuracy(y_pred, y):
 
 
 
-def grad_descent(X, y, reg=0.0, lr=1e-5, eps=1e-6, max_iter=500, print_freq=20):
+def grad_descent(X, y, reg=0.0, lr=1e-4, eps=1e-6, max_iter=200, print_freq=20):
         """     This function takes in seven arguments:
                         1) X, the data with dimension m x (n + 1)
                         2) y, the label of data with dimension m x 1
@@ -185,6 +197,14 @@ def grad_descent(X, y, reg=0.0, lr=1e-5, eps=1e-6, max_iter=500, print_freq=20):
         while iter_num < max_iter and np.linalg.norm(W_grad) > eps:
 
                 "*** YOUR CODE HERE ***"
+                nll = NLL(X, y, W, reg=reg)
+                if np.isnan(nll):
+                        break
+
+                nll_list.append(nll)
+
+                W_grad = grad_softmax(X, y, W, reg=reg)
+                W -= lr * W_grad
 
 
                 "*** END YOUR CODE HERE ***"
@@ -234,8 +254,13 @@ def accuracy_vs_lambda(X_train, y_train_OH, X_test, y_test, lambda_list):
         for reg in lambda_list:
 
                 "*** YOUR CODE HERE ***"
+                W_opt, nll = grad_descent(X_train, y_train_OH, reg=reg)
 
+                predicted = predict(X_test, W_opt)
 
+                accuracy = get_accuracy(predicted, y_test)
+
+                accu_list.append(accuracy)
                 "*** END YOUR CODE HERE ***"
 
                 print('-- Accuracy is {:2.4f} for lambda = {:2.2f}'.format(accuracy, reg))
@@ -256,7 +281,7 @@ def accuracy_vs_lambda(X_train, y_train_OH, X_test, y_test, lambda_list):
         # TODO: Find the optimal lambda that maximizes the accuracy
         # NOTE: use the variable given, reg_opt
         "*** YOUR CODE HERE ***"
-
+        reg_opt = lambda_list[np.argmax(accu_list)]
 
         "*** END YOUR CODE HERE ***"
 
@@ -299,20 +324,18 @@ if __name__ == '__main__':
         y_test_OH = enc.fit_transform(y_test.copy()).astype(int).toarray()
 
 
-        exit(0)
-
         # =============STEP 1: Accuracy versus lambda=================
         # NOTE: Fill in the code in NLL, grad_softmax, predict and grad_descent.
         #               Then, fill in predict and accuracy_vs_lambda
 
         print('\n\n==> Step 1: Finding optimal regularization parameter...')
 
-        lambda_list = [0.01, 0.1, 0.5, 1.0, 10.0, 50.0, 100.0, 200.0, 500.0, 1000.0]
+        lambda_list = [0.5, 1.0, 5.0, 10.0, 20.0, 50.0]
         reg_opt = accuracy_vs_lambda(X_train, y_train_OH, X_test, y_test, lambda_list)
 
         print('\n-- Optimal regularization parameter is {:2.2f}'.format(reg_opt))
 
-
+        exit(0)
 
 
 
